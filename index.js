@@ -9,7 +9,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-const { addRole, getAllRole } = require("./controllers/roleControllers");
+const {
+  addRole,
+  getAllRole,
+  roleUpdate,
+} = require("./controllers/roleControllers");
 
 const role = require("./models/role");
 
@@ -17,6 +21,7 @@ role.sync({ alter: true });
 
 app.post("/role/add", addRole);
 app.get("/role/list", getAllRole);
+app.put("/role/edit/:id", roleUpdate);
 
 const port = process.env.port || 8000;
 app.listen(port);

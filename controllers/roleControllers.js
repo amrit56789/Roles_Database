@@ -21,7 +21,28 @@ const getAllRole = async (req, res) => {
     });
   }
 };
+
+const roleUpdate = async (req, res) => {
+  const { description, id } = req.body;
+  try {
+    const roleDataUpdate = await role.update(
+      {
+        description: description,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    res.status(200).send(roleDataUpdate);
+  } catch (err) {
+    res.status(500).send({ message: "500 error to user" });
+  }
+};
+
 module.exports = {
   addRole,
   getAllRole,
+  roleUpdate,
 };
