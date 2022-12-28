@@ -14,6 +14,7 @@ const {
   getAllRole,
   roleUpdate,
   deleteRole,
+  getSingleRole,
 } = require("./controllers/roleControllers");
 
 const role = require("./models/role");
@@ -24,7 +25,7 @@ app.post("/role/add", addRole);
 app.get("/role/list", getAllRole);
 app.put("/role/edit/:id", roleUpdate);
 app.delete("/role/delete/:id", deleteRole);
-
+app.get("/role/:id", getSingleRole);
 const port = process.env.port || 8000;
 app.listen(port);
 console.log("Server running at http://localhost:8000");

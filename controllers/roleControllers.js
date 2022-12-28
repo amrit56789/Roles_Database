@@ -56,9 +56,24 @@ const deleteRole = async (req, res) => {
   }
 };
 
+const getSingleRole = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const getRole = await role.findAll({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).send(getRole);
+  } catch (err) {
+    res.status(500).send({ message: "500 error to user" });
+  }
+};
+
 module.exports = {
   addRole,
   getAllRole,
   roleUpdate,
   deleteRole,
+  getSingleRole,
 };
