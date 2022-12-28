@@ -13,6 +13,7 @@ const {
   addRole,
   getAllRole,
   roleUpdate,
+  deleteRole,
 } = require("./controllers/roleControllers");
 
 const role = require("./models/role");
@@ -22,6 +23,7 @@ role.sync({ alter: true });
 app.post("/role/add", addRole);
 app.get("/role/list", getAllRole);
 app.put("/role/edit/:id", roleUpdate);
+app.delete("/role/delete/:id", deleteRole);
 
 const port = process.env.port || 8000;
 app.listen(port);
