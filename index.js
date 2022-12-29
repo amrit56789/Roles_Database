@@ -26,6 +26,10 @@ const role = require("./models/role");
 // app.put("/role/edit/:id", roleUpdate);
 // app.delete("/role/delete/:id", deleteRole);
 // app.get("/role/:id", getSingleRole);
+const {
+  checkValidation,
+  validationMiddleWare,
+} = require("./middleWare/middleWare");
 
 const { userRegister } = require("./controllers/userController");
 
@@ -33,7 +37,11 @@ const user = require("./models/user");
 
 // user.sync({ alter: true });
 
-app.post("/user/register", userRegister);
+app.post(
+  "/user/register",
+  [checkValidation(), validationMiddleWare],
+  userRegister
+);
 const port = process.env.port || 8000;
 
 app.listen(port);
