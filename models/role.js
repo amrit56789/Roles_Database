@@ -2,8 +2,8 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
 
-const Role = sequelize.define(
-  "Role",
+const roles = sequelize.define(
+  "role",
   {
     id: {
       type: Sequelize.INTEGER,
@@ -27,4 +27,4 @@ const Role = sequelize.define(
   }
 );
 
-module.exports = Role;
+module.exports = roles;
