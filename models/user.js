@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
-const role = require("../models/role");
+const Role = require("../models/role");
 const user = sequelize.define(
   "user",
   {
@@ -28,7 +28,7 @@ const user = sequelize.define(
     roleId: {
       type: Sequelize.INTEGER,
       reference: {
-        model: "role",
+        model: "Role",
         key: "id",
       },
     },
@@ -38,5 +38,5 @@ const user = sequelize.define(
     timestamps: false,
   }
 );
-role.hasMany(user);
+Role.hasMany(user);
 module.exports = user;

@@ -18,8 +18,7 @@ const userRegister = async (req, res) => {
     });
     res.status(200).send(userData);
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: "Sorry, Role id is wrong" });
+    res.status(500).send({ message: "500 error to user" });
   }
 };
 

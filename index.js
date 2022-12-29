@@ -31,7 +31,7 @@ const { userRegister } = require("./controllers/userController");
 
 const user = require("./models/user");
 
-user.sync({ alter: true });
+// user.sync({ alter: true });
 
 app.post("/user/register", userRegister);
 const port = process.env.port || 8000;
