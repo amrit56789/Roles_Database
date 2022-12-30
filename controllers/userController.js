@@ -37,18 +37,21 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.compare(password, salt);
+    const hash = await bcrypt.hash(password, salt);
     const userData = await user.findOne({
       where: {
-        email: email,
-        password: hash,
+        email,
       },
-      attributes: ["id"],
     });
     if (!userData) {
       res.status(401).send({ message: "Please provide correct details" });
     } else {
-      res.status(200).send(userData);
+      const isMatch = await bcrypt.compare(password, userData.password);
+      if (isMatch) {
+        res.status(200).send({ id: userData.id });
+      } else {
+        res.status(500).send({ message: "Password is incorrect" });
+      }
     }
   } catch (error) {
     console.log(error);
