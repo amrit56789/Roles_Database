@@ -19,7 +19,7 @@ const userRegister = async (req, res) => {
     const hash = await bcrypt.hash(password, salt);
     const userData = await user.create({
       username,
-      password: hash,
+      password: hash.slice(0, 6),
       email,
       firstName,
       lastName,

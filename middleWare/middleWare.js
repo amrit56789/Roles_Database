@@ -11,6 +11,8 @@ const checkValidation = () => {
     check("password")
       .isLength({ min: 5 })
       .withMessage("Password must be at least 5 character long"),
+
+    // Check email
     check("email").isEmail().withMessage("Email is not correct"),
 
     // check password and confirm password validation

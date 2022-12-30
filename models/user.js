@@ -11,7 +11,7 @@ const user = sequelize.define(
       allowNull: false,
     },
     password: {
-      type: Sequelize.STRING(20),
+      type: Sequelize.STRING(10),
       allowNull: false,
     },
     email: {
@@ -28,7 +28,7 @@ const user = sequelize.define(
     roleId: {
       type: Sequelize.INTEGER,
       reference: {
-        model: "Role.hasMany(user)",
+        model: Role,
         key: "id",
       },
     },
