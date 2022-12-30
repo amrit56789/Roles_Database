@@ -23,6 +23,11 @@ const checkValidation = () => {
   ];
 };
 
+const emailValidator = () => {
+  // Check email
+  return [check("email").isEmail().withMessage("Email is not correct")];
+};
+
 const validationMiddleWare = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -31,4 +36,4 @@ const validationMiddleWare = (req, res, next) => {
   next();
 };
 
-module.exports = { checkValidation, validationMiddleWare };
+module.exports = { checkValidation, validationMiddleWare, emailValidator };
