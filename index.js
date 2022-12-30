@@ -9,23 +9,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-// const {
-//   addRole,
-//   getAllRole,
-//   roleUpdate,
-//   deleteRole,
-//   getSingleRole,
-// } = require("./controllers/roleControllers");
+// Role table start
+const {
+  addRole,
+  getAllRole,
+  roleUpdate,
+  deleteRole,
+  getSingleRole,
+} = require("./controllers/roleControllers");
 
 const role = require("./models/role");
 
-// role.sync({ alter: true });
+role.sync({ alter: false });
 
-// app.post("/role/add", addRole);
-// app.get("/role/list", getAllRole);
-// app.put("/role/edit/:id", roleUpdate);
-// app.delete("/role/delete/:id", deleteRole);
-// app.get("/role/:id", getSingleRole);
+app.post("/role/add", addRole);
+app.get("/role/list", getAllRole);
+app.put("/role/edit/:id", roleUpdate);
+app.delete("/role/delete/:id", deleteRole);
+app.get("/role/:id", getSingleRole);
+
+// user table start
 const {
   checkValidation,
   validationMiddleWare,
@@ -35,7 +38,7 @@ const { userRegister } = require("./controllers/userController");
 
 const user = require("./models/user");
 
-// user.sync({ alter: true });
+user.sync({ alter: false });
 
 app.post(
   "/user/register",

@@ -6,29 +6,29 @@ const user = sequelize.define(
   "user",
   {
     username: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(12),
       unique: true,
       allowNull: false,
     },
     password: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
       allowNull: false,
     },
     email: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
       unique: true,
       allowNull: false,
     },
     firstName: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
     },
     lastName: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
     },
     roleId: {
       type: Sequelize.INTEGER,
       reference: {
-        model: "Role",
+        model: "Role.hasMany(user)",
         key: "id",
       },
     },
@@ -38,5 +38,5 @@ const user = sequelize.define(
     timestamps: false,
   }
 );
-Role.hasMany(user);
+
 module.exports = user;

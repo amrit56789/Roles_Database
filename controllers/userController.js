@@ -14,13 +14,9 @@ const userRegister = async (req, res) => {
       roleId,
       confirmPassword,
     } = req.body;
-    if (password !== confirmPassword) {
-      return res
-        .status(402)
-        .send({ message: "password and confirm password doesn't match" });
-    }
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(password, 10);
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
     const userData = await user.create({
       username,
       password: hash,

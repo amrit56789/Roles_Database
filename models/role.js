@@ -12,12 +12,12 @@ const Role = sequelize.define(
       primaryKey: true,
     },
     name: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
       allowNull: false,
       unique: true,
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(50),
       allowNull: false,
     },
   },
