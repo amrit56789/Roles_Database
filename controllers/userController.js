@@ -57,4 +57,22 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login };
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.headers;
+    const userData = await user.findOne({
+      where: {
+        id,
+      },
+    });
+    if (userData === null) {
+      res.status(500).send({ message: "500 error, Id is invalid" });
+    }
+    res.status(200).send(userData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to user" });
+  }
+};
+
+module.exports = { userRegister, login, getUser };

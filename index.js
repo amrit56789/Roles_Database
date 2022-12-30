@@ -5,7 +5,11 @@ const app = express();
 const sequelize = require("./util/database");
 const role = require("./models/role");
 const user = require("./models/user");
-const { userRegister, login } = require("./controllers/userController");
+const {
+  userRegister,
+  login,
+  getUser,
+} = require("./controllers/userController");
 
 // Role table start
 const {
@@ -20,6 +24,7 @@ const {
   checkValidation,
   validationMiddleWare,
   emailValidator,
+  getUserValidate,
 } = require("./middleWare/middleWare");
 
 // parse application/x-www-form-urlencoded
@@ -46,7 +51,7 @@ app.post(
 
 // login
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
-
+app.get("/user/get/", getUserValidate, getUser);
 // Port connection
 const port = process.env.port || 8000;
 
