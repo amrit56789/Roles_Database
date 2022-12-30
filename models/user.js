@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
 const Role = require("../models/role");
+
 const user = sequelize.define(
   "user",
   {
