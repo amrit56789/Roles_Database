@@ -3,7 +3,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../util/database");
 
 const Role = sequelize.define(
-  "Role",
+  "role",
   {
     id: {
       type: Sequelize.INTEGER,
@@ -12,12 +12,12 @@ const Role = sequelize.define(
       primaryKey: true,
     },
     name: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
       allowNull: false,
       unique: true,
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(50),
       allowNull: false,
     },
   },
