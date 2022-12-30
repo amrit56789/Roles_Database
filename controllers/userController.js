@@ -33,4 +33,27 @@ const userRegister = async (req, res) => {
   }
 };
 
-module.exports = { userRegister };
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.compare(password, salt);
+    const userData = await user.findOne({
+      where: {
+        email: email,
+        password: hash,
+      },
+      attributes: ["id"],
+    });
+    if (!userData) {
+      res.status(401).send({ message: "Please provide correct details" });
+    } else {
+      res.status(200).send(userData);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to user" });
+  }
+};
+
+module.exports = { userRegister, login };
