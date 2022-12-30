@@ -33,4 +33,28 @@ const userRegister = async (req, res) => {
   }
 };
 
-module.exports = { userRegister };
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userData = await user.findOne({
+      where: {
+        email,
+      },
+    });
+    if (!userData) {
+      res.status(401).send({ message: "500 Error to user" });
+    } else {
+      const isMatch = await bcrypt.compare(password, userData.password);
+      if (isMatch) {
+        res.status(200).send({ id: userData.id });
+      } else {
+        res.status(500).send({ message: "500 error to user" });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to user" });
+  }
+};
+
+module.exports = { userRegister, login };
