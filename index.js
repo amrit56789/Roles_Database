@@ -24,6 +24,7 @@ const {
   checkValidation,
   validationMiddleWare,
   emailValidator,
+  getUserValidate,
 } = require("./middleWare/middleWare");
 
 // parse application/x-www-form-urlencoded
@@ -50,7 +51,7 @@ app.post(
 
 // login
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
-app.get("/user/get/", getUser);
+app.get("/user/get/", getUserValidate, getUser);
 // Port connection
 const port = process.env.port || 8000;
 

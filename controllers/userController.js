@@ -60,14 +60,18 @@ const login = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.headers;
-    const userData = await user.findAll({
+    const userData = await user.findOne({
       where: {
-        id: id,
+        id,
       },
     });
+    if (userData === null) {
+      res.status(500).send({ message: "500 error, Id is invalid" });
+    }
     res.status(200).send(userData);
   } catch (error) {
-    res.send(500).send({ message: "500 error to user" });
+    console.log(error);
+    res.status(500).send({ message: "500 error to user" });
   }
 };
 

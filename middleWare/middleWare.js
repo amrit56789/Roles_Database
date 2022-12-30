@@ -28,6 +28,14 @@ const emailValidator = () => {
   return [check("email").isEmail().withMessage("Email is not correct")];
 };
 
+const getUserValidate = (req, res, next) => {
+  const userId = req.headers.id;
+  if (!userId) {
+    res.status(500).send({ message: "500 error to user, Please define Id" });
+  }
+  next();
+};
+
 const validationMiddleWare = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -36,4 +44,9 @@ const validationMiddleWare = (req, res, next) => {
   next();
 };
 
-module.exports = { checkValidation, validationMiddleWare, emailValidator };
+module.exports = {
+  checkValidation,
+  validationMiddleWare,
+  emailValidator,
+  getUserValidate,
+};
