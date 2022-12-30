@@ -57,4 +57,18 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login };
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.headers;
+    const userData = await user.findAll({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).send(userData);
+  } catch (error) {
+    res.send(500).send({ message: "500 error to user" });
+  }
+};
+
+module.exports = { userRegister, login, getUser };
