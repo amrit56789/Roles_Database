@@ -88,4 +88,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login, getUser, deleteUser };
+const findLimitUser = async (req, res) => {
+  try {
+    const limit = parseInt(req.params.limit);
+    const page = parseInt(req.params.page);
+    const data = await user.findAndCountAll({
+      limit: limit,
+      offset: page,
+    });
+    res.status(200).send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to user, data not find" });
+  }
+};
+
+module.exports = { userRegister, login, getUser, deleteUser, findLimitUser };
