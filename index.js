@@ -56,7 +56,7 @@ app.post(
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
 app.get("/user/get/", getUserValidate, getUser);
 app.put("/user/delete", deleteUserData, deleteUser);
-app.get("/user/list/:limit", findLimitUser);
+app.get("/user/list/:limit/:page", findLimitUser);
 // Port connection
 const port = process.env.port || 8000;
 

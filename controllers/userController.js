@@ -89,29 +89,17 @@ const deleteUser = async (req, res) => {
 };
 
 const findLimitUser = async (req, res) => {
-  const pageAsNumber = Number.parseInt(req.query.page);
-  const sizeAsNumber = Number.parseInt(req.query.size);
-
   try {
-    let page = 0;
-    if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-      page = pageAsNumber;
-    }
-
-    let size = 10;
-    if (!Number.isNaN(sizeAsNumber)) {
-      if (sizeAsNumber > 0 && size < 10) {
-        size = sizeAsNumber;
-      }
-    }
-    const users = await user.findAndCountAll({
-      limit: sizeAsNumber,
-      offset: pageAsNumber * sizeAsNumber,
+    const limit = parseInt(req.params.limit);
+    const page = parseInt(req.params.page);
+    const data = await user.findAndCountAll({
+      limit: limit,
+      offset: page,
     });
-
-    res.status(200).send(users);
+    res.status(200).send(data);
   } catch (error) {
-    res.status(500).send({ message: null });
+    console.log(error);
+    res.status(500).send({ message: "500 error to user, data not find" });
   }
 };
 
