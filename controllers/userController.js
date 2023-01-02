@@ -88,4 +88,31 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login, getUser, deleteUser };
+const findLimitUser = async (req, res) => {
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+
+  try {
+    let page = 0;
+    if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+      page = pageAsNumber;
+    }
+
+    let size = 10;
+    if (!Number.isNaN(sizeAsNumber)) {
+      if (sizeAsNumber > 0 && size < 10) {
+        size = sizeAsNumber;
+      }
+    }
+    const users = await user.findAndCountAll({
+      limit: sizeAsNumber,
+      offset: pageAsNumber * sizeAsNumber,
+    });
+
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({ message: null });
+  }
+};
+
+module.exports = { userRegister, login, getUser, deleteUser, findLimitUser };

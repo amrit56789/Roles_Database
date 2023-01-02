@@ -10,6 +10,7 @@ const {
   login,
   getUser,
   deleteUser,
+  findLimitUser,
 } = require("./controllers/userController");
 
 // Role table start
@@ -55,7 +56,7 @@ app.post(
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
 app.get("/user/get/", getUserValidate, getUser);
 app.put("/user/delete", deleteUserData, deleteUser);
-
+app.get("/user/list/:limit", findLimitUser);
 // Port connection
 const port = process.env.port || 8000;
 
