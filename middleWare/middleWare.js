@@ -36,6 +36,16 @@ const getUserValidate = (req, res, next) => {
   next();
 };
 
+const deleteUserData = (req, res, next) => {
+  const userId = req.headers.id;
+  if (!userId) {
+    res
+      .status(500)
+      .send({ message: "500 error to user, Please enter valid id." });
+  }
+  next();
+};
+
 const validationMiddleWare = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -49,4 +59,5 @@ module.exports = {
   validationMiddleWare,
   emailValidator,
   getUserValidate,
+  deleteUserData,
 };

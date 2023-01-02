@@ -9,6 +9,7 @@ const {
   userRegister,
   login,
   getUser,
+  deleteUser,
 } = require("./controllers/userController");
 
 // Role table start
@@ -25,6 +26,7 @@ const {
   validationMiddleWare,
   emailValidator,
   getUserValidate,
+  deleteUserData,
 } = require("./middleWare/middleWare");
 
 // parse application/x-www-form-urlencoded
@@ -52,6 +54,8 @@ app.post(
 // login
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
 app.get("/user/get/", getUserValidate, getUser);
+app.put("/user/delete", deleteUserData, deleteUser);
+
 // Port connection
 const port = process.env.port || 8000;
 
