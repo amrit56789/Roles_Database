@@ -6,8 +6,6 @@ const sequelize = require("../util/database");
 const user = require("../models/user");
 const accessToken = require("../models/accessToken");
 
-const SECRET_KEY = "NotesApi";
-
 const userRegister = async (req, res) => {
   try {
     const {
@@ -53,7 +51,7 @@ const login = async (req, res) => {
       const isMatch = await bcrypt.compare(password, userData.password);
       if (isMatch) {
         const token = await createTokenSave(userData.id, email, password);
-        res.status(200).send({ message: "Success full add" });
+        res.status(200).send(token);
       } else {
         res.status(500).send({
           message: "500 Error to user, Email or password is incorrect",
@@ -119,16 +117,19 @@ const findLimitUser = async (req, res) => {
 const createTokenSave = async (id, email, password) => {
   const Token = crypto
     .createHash("md5")
-    .update(`${email}${password}${SECRET_KEY}`)
+    .update(`${email}${password}${process.env.SECRET_KEY}`)
     .digest("hex");
 
-  const expiryDate = moment().add(1, "hour").toDate();
+  const expiryDate = new Date();
+  expiryDate.setHours(1);
 
   const tokenData = await accessToken.create({
     userId: id,
     accessToken: Token,
     expiryDate: expiryDate,
   });
+
+  return tokenData;
 };
 
 module.exports = {
