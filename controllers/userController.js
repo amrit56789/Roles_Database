@@ -38,7 +38,7 @@ const userRegister = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { id, email, password } = req.body;
+  const { email, password } = req.body;
   try {
     const userData = await user.findOne({
       where: {
@@ -52,7 +52,7 @@ const login = async (req, res) => {
     } else {
       const isMatch = await bcrypt.compare(password, userData.password);
       if (isMatch) {
-        const token = createTokenSave(id, email, password);
+        const token = await createTokenSave(userData.id, email, password);
         res.status(200).send({ message: "Success full add" });
       } else {
         res.status(500).send({

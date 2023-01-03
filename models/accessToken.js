@@ -1,15 +1,13 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
-
+const User = require("../models/user");
 const accessToken = sequelize.define(
   "accessToken",
   {
     userId: {
       type: Sequelize.INTEGER,
-      autoIncrement: true,
       allowNull: false,
-      primaryKey: true,
     },
     accessToken: {
       type: Sequelize.STRING(255),
