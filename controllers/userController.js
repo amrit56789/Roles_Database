@@ -1,8 +1,9 @@
 const Sequelize = require("sequelize");
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-
 const sequelize = require("../util/database");
 const user = require("../models/user");
+const accessToken = require("../models/accessToken");
 
 const userRegister = async (req, res) => {
   try {
@@ -42,18 +43,25 @@ const login = async (req, res) => {
       },
     });
     if (!userData) {
-      res.status(401).send({ message: "500 Error to user" });
+      res
+        .status(401)
+        .send({ message: "500 Error to user, Email or password is incorrect" });
     } else {
       const isMatch = await bcrypt.compare(password, userData.password);
       if (isMatch) {
-        res.status(200).send({ id: userData.id });
+        const token = await createTokenSave(userData.id, email, password);
+        res.status(200).send(token);
       } else {
-        res.status(500).send({ message: "500 error to user" });
+        res.status(500).send({
+          message: "500 Error to user, Email or password is incorrect",
+        });
       }
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "500 error to user" });
+    res
+      .status(500)
+      .send({ message: "500 error to user, Internal server error" });
   }
 };
 
@@ -70,7 +78,9 @@ const getUser = async (req, res) => {
     }
     res.status(200).send(userData);
   } catch (error) {
-    res.status(500).send({ message: "500 error to user" });
+    res
+      .status(500)
+      .send({ message: "500 error to user, Internal server error" });
   }
 };
 
@@ -103,4 +113,28 @@ const findLimitUser = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login, getUser, deleteUser, findLimitUser };
+const createTokenSave = async (id, email, password) => {
+  const Token = crypto
+    .createHash("md5")
+    .update(`${email}${password}${process.env.SECRET_KEY}`)
+    .digest("hex");
+
+  const expiryDate = new Date();
+  expiryDate.setHours(1);
+
+  const tokenData = await accessToken.create({
+    userId: id,
+    accessToken: Token,
+    expiryDate: expiryDate,
+  });
+
+  return tokenData;
+};
+
+module.exports = {
+  userRegister,
+  login,
+  getUser,
+  deleteUser,
+  findLimitUser,
+};
