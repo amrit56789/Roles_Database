@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const crypto = require("crypto");
-const moment = require("moment");
 const bcrypt = require("bcrypt");
 const sequelize = require("../util/database");
 const user = require("../models/user");
