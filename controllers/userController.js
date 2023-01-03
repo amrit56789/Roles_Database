@@ -1,8 +1,12 @@
 const Sequelize = require("sequelize");
+const crypto = require("crypto");
+const moment = require("moment");
 const bcrypt = require("bcrypt");
-
 const sequelize = require("../util/database");
 const user = require("../models/user");
+const accessToken = require("../models/accessToken");
+
+const SECRET_KEY = "NotesApi";
 
 const userRegister = async (req, res) => {
   try {
@@ -34,7 +38,7 @@ const userRegister = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { id, email, password } = req.body;
   try {
     const userData = await user.findOne({
       where: {
@@ -42,18 +46,25 @@ const login = async (req, res) => {
       },
     });
     if (!userData) {
-      res.status(401).send({ message: "500 Error to user" });
+      res
+        .status(401)
+        .send({ message: "500 Error to user, Email or password is incorrect" });
     } else {
       const isMatch = await bcrypt.compare(password, userData.password);
       if (isMatch) {
-        res.status(200).send({ id: userData.id });
+        const token = createTokenSave(id, email, password);
+        res.status(200).send({ message: "Success full add" });
       } else {
-        res.status(500).send({ message: "500 error to user" });
+        res.status(500).send({
+          message: "500 Error to user, Email or password is incorrect",
+        });
       }
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "500 error to user" });
+    res
+      .status(500)
+      .send({ message: "500 error to user, Internal server error" });
   }
 };
 
@@ -70,7 +81,9 @@ const getUser = async (req, res) => {
     }
     res.status(200).send(userData);
   } catch (error) {
-    res.status(500).send({ message: "500 error to user" });
+    res
+      .status(500)
+      .send({ message: "500 error to user, Internal server error" });
   }
 };
 
@@ -103,4 +116,25 @@ const findLimitUser = async (req, res) => {
   }
 };
 
-module.exports = { userRegister, login, getUser, deleteUser, findLimitUser };
+const createTokenSave = async (id, email, password) => {
+  const Token = crypto
+    .createHash("md5")
+    .update(`${email}${password}${SECRET_KEY}`)
+    .digest("hex");
+
+  const expiryDate = moment().add(1, "hour").toDate();
+
+  const tokenData = await accessToken.create({
+    userId: id,
+    accessToken: Token,
+    expiryDate: expiryDate,
+  });
+};
+
+module.exports = {
+  userRegister,
+  login,
+  getUser,
+  deleteUser,
+  findLimitUser,
+};
