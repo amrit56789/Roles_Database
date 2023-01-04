@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const sequelize = require("../util/database");
 const user = require("../models/user");
 const token = require("../models/accessToken");
-const address = require("../models/address");
+const addressData = require("../models/address");
 const userRegister = async (req, res) => {
   try {
     const {
@@ -69,6 +69,11 @@ const getUser = async (req, res) => {
   try {
     const { id } = req.headers;
     const userData = await user.findOne({
+      include: {
+        model: addressData,
+        as: "addressList",
+        attributes: ["address", "city"],
+      },
       where: {
         id,
       },
@@ -78,6 +83,7 @@ const getUser = async (req, res) => {
     }
     res.status(200).send(userData);
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .send({ message: "500 error to user, Internal server error" });
@@ -120,7 +126,6 @@ const createTokenSave = async (id, email, password) => {
     .digest("hex");
 
   const expiryDate = new Date();
-  expiryDate.setHours(1);
 
   const tokenData = await token.create({
     userId: id,
@@ -134,7 +139,7 @@ const createTokenSave = async (id, email, password) => {
 const addAddress = async (req, res) => {
   try {
     const { address, city, state, pin_code, phone_no, userId } = req.body;
-    const createAddress = await address.create({
+    const createAddress = await addressData.create({
       address,
       city,
       state,
@@ -142,7 +147,6 @@ const addAddress = async (req, res) => {
       phone_no,
       userId,
     });
-
     res.status(200).send(createAddress);
   } catch (error) {
     console.log(error);
