@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
 const Role = require("../models/role");
+const address = require("./address");
 
 const user = sequelize.define(
   "user",
@@ -39,5 +40,5 @@ const user = sequelize.define(
     timestamps: false,
   }
 );
-
+user.hasMany(address);
 module.exports = user;

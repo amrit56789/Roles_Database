@@ -1,15 +1,14 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
-const User = require("../models/user");
-const accessToken = sequelize.define(
+const Token = sequelize.define(
   "accessToken",
   {
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    accessToken: {
+    token: {
       type: Sequelize.STRING(255),
       allowNull: false,
       unique: true,
@@ -25,4 +24,4 @@ const accessToken = sequelize.define(
   }
 );
 
-module.exports = accessToken;
+module.exports = Token;
