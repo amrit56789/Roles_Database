@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const Token = require("../models/accessToken");
 
 const checkValidation = () => {
   return [
@@ -46,6 +47,26 @@ const deleteUserData = (req, res, next) => {
   next();
 };
 
+const tokenValidator = async (req, res, next) => {
+  const token = req.headers.token;
+  if (token) {
+    const findToken = await Token.findOne({
+      where: {
+        token,
+      },
+    });
+    console.log(findToken.userId);
+    if (findToken && findToken.token === token) {
+      req.body = { ...req.body, userId: findToken.userId };
+      next();
+    } else {
+      res.status(500).send({ message: "500 error to user, Wrong credential." });
+    }
+  } else {
+    res.status(500).send({ message: "500 error to user, Please enter token." });
+  }
+};
+
 const validationMiddleWare = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -60,4 +81,5 @@ module.exports = {
   emailValidator,
   getUserValidate,
   deleteUserData,
+  tokenValidator,
 };

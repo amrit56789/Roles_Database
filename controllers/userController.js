@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const sequelize = require("../util/database");
 const user = require("../models/user");
-const accessToken = require("../models/accessToken");
-
+const Token = require("../models/accessToken");
+const Address = require("../models/address");
 const userRegister = async (req, res) => {
   try {
     const {
@@ -114,7 +114,7 @@ const findLimitUser = async (req, res) => {
 };
 
 const createTokenSave = async (id, email, password) => {
-  const Token = crypto
+  const Token_value = crypto
     .createHash("md5")
     .update(`${email}${password}${process.env.SECRET_KEY}`)
     .digest("hex");
@@ -122,13 +122,34 @@ const createTokenSave = async (id, email, password) => {
   const expiryDate = new Date();
   expiryDate.setHours(1);
 
-  const tokenData = await accessToken.create({
+  const tokenData = await Token.create({
     userId: id,
-    accessToken: Token,
+    token: Token_value,
     expiryDate: expiryDate,
   });
 
   return tokenData;
+};
+
+const addressData = async (req, res) => {
+  try {
+    const { address, city, state, pin_code, phone_no, userId } = req.body;
+    const createAddress = await Address.create({
+      address,
+      city,
+      state,
+      pin_code,
+      phone_no,
+      userId,
+    });
+
+    res.status(200).send(createAddress);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ message: "500 error to user, Internal server error" });
+  }
 };
 
 module.exports = {
@@ -137,4 +158,5 @@ module.exports = {
   getUser,
   deleteUser,
   findLimitUser,
+  addressData,
 };
