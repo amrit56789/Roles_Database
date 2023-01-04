@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const sequelize = require("../util/database");
 const user = require("../models/user");
-const Token = require("../models/accessToken");
-const Address = require("../models/address");
+const token = require("../models/accessToken");
+const address = require("../models/address");
 const userRegister = async (req, res) => {
   try {
     const {
@@ -114,7 +114,7 @@ const findLimitUser = async (req, res) => {
 };
 
 const createTokenSave = async (id, email, password) => {
-  const Token_value = crypto
+  const tokenValue = crypto
     .createHash("md5")
     .update(`${email}${password}${process.env.SECRET_KEY}`)
     .digest("hex");
@@ -122,19 +122,19 @@ const createTokenSave = async (id, email, password) => {
   const expiryDate = new Date();
   expiryDate.setHours(1);
 
-  const tokenData = await Token.create({
+  const tokenData = await token.create({
     userId: id,
-    token: Token_value,
+    token: tokenValue,
     expiryDate: expiryDate,
   });
 
   return tokenData;
 };
 
-const addressData = async (req, res) => {
+const addAddress = async (req, res) => {
   try {
     const { address, city, state, pin_code, phone_no, userId } = req.body;
-    const createAddress = await Address.create({
+    const createAddress = await address.create({
       address,
       city,
       state,
@@ -158,5 +158,5 @@ module.exports = {
   getUser,
   deleteUser,
   findLimitUser,
-  addressData,
+  addAddress,
 };

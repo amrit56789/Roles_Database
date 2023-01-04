@@ -5,7 +5,7 @@ const app = express();
 const sequelize = require("./util/database");
 const role = require("./models/role");
 const user = require("./models/user");
-const Token = require("./models/accessToken");
+const token = require("./models/accessToken");
 const address = require("./models/address");
 
 const {
@@ -14,7 +14,7 @@ const {
   getUser,
   deleteUser,
   findLimitUser,
-  addressData,
+  addAddress,
 } = require("./controllers/userController");
 
 // Role table start
@@ -42,7 +42,7 @@ app.use(bodyParser.json());
 
 role.sync({ alter: false });
 user.sync({ alter: false });
-Token.sync({ alert: false });
+token.sync({ alert: false });
 address.sync({ alter: false });
 // Role table
 app.post("/role/add", addRole);
@@ -65,7 +65,7 @@ app.put("/user/delete", deleteUserData, deleteUser);
 app.get("/user/list/:limit/:page", findLimitUser);
 
 // address
-app.post("/user/address", tokenValidator, addressData);
+app.post("/user/address", tokenValidator, addAddress);
 
 // Port connection
 const port = process.env.port || 8000;
