@@ -55,10 +55,26 @@ const tokenValidator = async (req, res, next) => {
         token,
       },
     });
-    console.log(findToken.userId);
+
+    let time = findToken.expiryDate;
+
+    let currentTime = new Date();
+
+    let difference = time - currentTime;
+
+    let formattedDifference = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    }).format(difference);
+
     if (findToken && findToken.token === token) {
-      req.body = { ...req.body, userId: findToken.userId };
-      next();
+      if (formattedDifference && formattedDifference[0] < 1) {
+        req.body = { ...req.body, userId: findToken.userId };
+        next();
+      } else {
+        res.status(401).send({ message: "Session Expire" });
+      }
     } else {
       res.status(500).send({ message: "500 error to user, Wrong credential." });
     }
