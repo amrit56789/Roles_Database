@@ -56,15 +56,15 @@ const tokenValidator = async (req, res, next) => {
       },
     });
 
-    let timing = findToken.expiryDate.getTime();
-    let currentTime = new Date().getTime();
-
-    let difference = (timing - currentTime) / 1000;
-    difference /= 60;
-
-    let minutes = Math.abs(Math.round(difference));
-
     if (findToken && findToken.token === token) {
+      const timing = findToken.expiryDate.getTime();
+      const currentTime = new Date().getTime();
+
+      let difference = (timing - currentTime) / 1000;
+      difference /= 60;
+
+      const minutes = Math.abs(Math.round(difference));
+
       if (minutes < 60) {
         req.body = { ...req.body, userId: findToken.userId };
         next();
