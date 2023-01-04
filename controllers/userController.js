@@ -157,9 +157,9 @@ const addAddress = async (req, res) => {
   }
 };
 
-const deleteAddress = async (req, res) => {
+const deleteMultipleAddress = async (req, res) => {
   try {
-    const { id } = req.headers;
+    const { id } = req.body;
 
     const destroyAddress = await addressData.destroy({
       where: {
@@ -183,5 +183,5 @@ module.exports = {
   deleteUser,
   findLimitUser,
   addAddress,
-  deleteAddress,
+  deleteMultipleAddress,
 };

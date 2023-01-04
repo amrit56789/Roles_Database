@@ -15,7 +15,7 @@ const {
   deleteUser,
   findLimitUser,
   addAddress,
-  deleteAddress,
+  deleteMultipleAddress,
 } = require("./controllers/userController");
 
 // Role table start
@@ -67,7 +67,7 @@ app.get("/user/list/:limit/:page", findLimitUser);
 
 // address
 app.post("/user/address", tokenValidator, addAddress);
-app.delete("/user/delete", deleteAddress);
+app.delete("/user/delete", deleteMultipleAddress);
 
 // Port connection
 const port = process.env.port || 8000;
