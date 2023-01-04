@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 const sequelize = require("../util/database");
 const user = require("../models/user");
 const token = require("../models/accessToken");
@@ -156,6 +157,25 @@ const addAddress = async (req, res) => {
   }
 };
 
+const deleteMultipleAddress = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    const destroyAddress = await addressData.destroy({
+      where: {
+        id: {
+          [Op.or]: ids,
+        },
+      },
+    });
+
+    res.status(200).send({ status: destroyAddress });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   userRegister,
   login,
@@ -163,4 +183,5 @@ module.exports = {
   deleteUser,
   findLimitUser,
   addAddress,
+  deleteMultipleAddress,
 };
