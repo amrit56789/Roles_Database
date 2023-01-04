@@ -72,7 +72,7 @@ const getUser = async (req, res) => {
       include: {
         model: addressData,
         as: "addressList",
-        attributes: ["address", "city"],
+        attributes: ["address", "city", "state", "pin_code", "phone_no"],
       },
       where: {
         id,
