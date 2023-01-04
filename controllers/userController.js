@@ -159,12 +159,12 @@ const addAddress = async (req, res) => {
 
 const deleteMultipleAddress = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { ids } = req.body;
 
     const destroyAddress = await addressData.destroy({
       where: {
         id: {
-          [Op.or]: id,
+          [Op.or]: ids,
         },
       },
     });
