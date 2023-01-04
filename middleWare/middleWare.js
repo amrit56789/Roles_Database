@@ -33,8 +33,9 @@ const getUserValidate = (req, res, next) => {
   const userId = req.headers.id;
   if (!userId) {
     res.status(500).send({ message: "500 error to user, Please define Id" });
+  } else {
+    next();
   }
-  next();
 };
 
 const deleteUserData = (req, res, next) => {
@@ -48,34 +49,42 @@ const deleteUserData = (req, res, next) => {
 };
 
 const tokenValidator = async (req, res, next) => {
-  const token = req.headers.token;
-  if (token) {
-    const findToken = await Token.findOne({
-      where: {
-        token,
-      },
-    });
+  try {
+    const token = req.headers.token;
+    if (token) {
+      const findToken = await Token.findOne({
+        where: {
+          token,
+        },
+      });
 
-    if (findToken && findToken.token === token) {
-      const timing = findToken.expiryDate.getTime();
-      const currentTime = new Date().getTime();
+      if (findToken && findToken.token === token) {
+        const timing = findToken.expiryDate.getTime();
+        const currentTime = new Date().getTime();
 
-      let difference = (timing - currentTime) / 1000;
-      difference /= 60;
+        let difference = (timing - currentTime) / 1000;
+        difference /= 60;
 
-      const minutes = Math.abs(Math.round(difference));
-
-      if (minutes < 60) {
-        req.body = { ...req.body, userId: findToken.userId };
-        next();
+        const minutes = Math.abs(Math.round(difference));
+        console.log(minutes);
+        if (minutes < 60) {
+          req.body = { ...req.body, userId: findToken.userId };
+          next();
+        } else {
+          res.status(401).send({ message: "Sorry session expire" });
+        }
       } else {
-        res.status(401).send({ message: "Sorry session expire" });
+        res
+          .status(400)
+          .send({ message: "500 error to user, Wrong credential." });
       }
     } else {
-      res.status(500).send({ message: "500 error to user, Wrong credential." });
+      res
+        .status(500)
+        .send({ message: "500 error to user, Please enter token." });
     }
-  } else {
-    res.status(500).send({ message: "500 error to user, Please enter token." });
+  } catch (error) {
+    res.status(500).send({ message: "500 error to user, Internal error" });
   }
 };
 

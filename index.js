@@ -60,7 +60,7 @@ app.post(
 
 // login
 app.post("/user/login", [emailValidator(), validationMiddleWare], login);
-app.get("/user/get/", getUserValidate, getUser);
+app.get("/user/get/:id", getUserValidate, getUser);
 app.put("/user/delete", deleteUserData, deleteUser);
 app.get("/user/list/:limit/:page", findLimitUser);
 

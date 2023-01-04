@@ -40,5 +40,6 @@ const user = sequelize.define(
     timestamps: false,
   }
 );
-user.hasMany(address);
+user.hasMany(address, { as: "addressList" });
+address.belongsTo(user);
 module.exports = user;
