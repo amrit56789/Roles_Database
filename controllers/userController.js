@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const sequelize = require("../util/database");
 const user = require("../models/user");
@@ -234,6 +235,30 @@ const checkResetPasswordToken = async (req, res) => {
             { password: hash },
             { where: { passwordResetToken: passwordResetToken } }
           );
+
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "amritsingh@innotechteam.in",
+              pass: "clnjieujqbrxnvld",
+            },
+          });
+
+          const mailOptions = {
+            from: "amritsingh@innotechteam.in",
+            to: "amrit578singh@gmail.com",
+            subject: "Sending Email using Node.js",
+            text: "That was easy!",
+          };
+
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("Email sent: " + info.response);
+            }
+          });
+
           res.status(200).send({ message: "Success full" });
         } catch (error) {
           console.log(error);
