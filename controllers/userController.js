@@ -186,15 +186,17 @@ const userForgetPassword = async (req, res) => {
         email: email,
       },
     });
+
     if (!data) {
       return res.status(400).send({ message: "Enter a valid data" });
     } else {
-      const jwtToken = jwt.sign({ email: email }, "process.env.SECRET_KEY");
+      let jwtToken = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
 
       const updateData = await user.update(
         { passwordResetToken: jwtToken },
-        { where: { email: email } }
+        { where: { email: req.body.email } }
       );
+
       res
         .status(200)
         .send({ message: "User password reset token updated successfully" });
@@ -203,6 +205,43 @@ const userForgetPassword = async (req, res) => {
     console.log(error);
     res.status(500).send({ message: "500 error, Internal error" });
   }
+};
+
+const checkResetPasswordToken = async (req, res) => {
+  const { passwordResetToken } = req.params;
+  if (!passwordResetToken) {
+    return res
+      .status(401)
+      .send({ message: "Please enter password reset token" });
+  }
+
+  const jwtCheck = jwt.verify(
+    passwordResetToken,
+    process.env.SECRET_KEY,
+    async (error, data) => {
+      if (error) {
+        res.status(400).send({ message: "Unauthorized token" });
+      } else {
+        const { password } = req.body;
+        if (!password) {
+          res.status(400).send({ message: "Please enter a password" });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+
+        try {
+          const updateData = await user.update(
+            { password: hash },
+            { where: { passwordResetToken: passwordResetToken } }
+          );
+          res.status(200).send({ message: "Success full" });
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: "Internal server error" });
+        }
+      }
+    }
+  );
 };
 
 module.exports = {
@@ -214,4 +253,5 @@ module.exports = {
   addAddress,
   deleteMultipleAddress,
   userForgetPassword,
+  checkResetPasswordToken,
 };
