@@ -17,6 +17,7 @@ const {
   addAddress,
   deleteMultipleAddress,
   userForgetPassword,
+  checkResetPasswordToken,
 } = require("./controllers/userController");
 
 // Role table start
@@ -43,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 role.sync({ alter: false });
-user.sync({ alter: true });
+user.sync({ alter: false });
 token.sync({ alert: false });
 address.sync({ alter: false });
 
@@ -73,7 +74,10 @@ app.delete("/user/delete", deleteMultipleAddress);
 
 // forget password route
 app.get("/user/forget-password", userForgetPassword);
-
+app.post(
+  "/user/verify-reset-password/:passwordResetToken",
+  checkResetPasswordToken
+);
 // Port connection
 const port = process.env.port || 8000;
 
