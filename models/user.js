@@ -4,6 +4,7 @@ const sequelize = require("../util/database");
 const Role = require("../models/role");
 const address = require("./address");
 
+const queryInterface = sequelize.getQueryInterface();
 const user = sequelize.define(
   "user",
   {
@@ -34,12 +35,16 @@ const user = sequelize.define(
         key: "id",
       },
     },
+    passwordResetToken: {
+      type: Sequelize.STRING,
+    },
   },
   {
     freezeTableName: true,
     timestamps: false,
   }
 );
+
 user.hasMany(address, { as: "addressList" });
 address.belongsTo(user);
 module.exports = user;
