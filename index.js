@@ -16,7 +16,7 @@ const {
   findLimitUser,
   addAddress,
   deleteMultipleAddress,
-  checkUserDetails,
+  userForgetPassword,
 } = require("./controllers/userController");
 
 // Role table start
@@ -72,7 +72,7 @@ app.post("/user/address", tokenValidator, addAddress);
 app.delete("/user/delete", deleteMultipleAddress);
 
 // forget password route
-app.get("/user/forget-password", checkUserDetails);
+app.get("/user/forget-password", userForgetPassword);
 
 // Port connection
 const port = process.env.port || 8000;

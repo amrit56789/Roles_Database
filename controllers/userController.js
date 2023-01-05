@@ -178,7 +178,7 @@ const deleteMultipleAddress = async (req, res) => {
   }
 };
 
-const checkUserDetails = async (req, res) => {
+const userForgetPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const data = await user.findOne({
@@ -189,14 +189,15 @@ const checkUserDetails = async (req, res) => {
     if (!data) {
       return res.status(400).send({ message: "Enter a valid data" });
     } else {
-      const key = process.env.SECRET_KEY;
-      const jwtToken = jwt.sign({ email: email }, "key");
+      const jwtToken = jwt.sign({ email: email }, "process.env.SECRET_KEY");
 
       const updateData = await user.update(
         { passwordResetToken: jwtToken },
         { where: { email: email } }
       );
-      res.status(200).send(updateData);
+      res
+        .status(200)
+        .send({ message: "User password reset token updated successfully" });
     }
   } catch (error) {
     console.log(error);
@@ -212,5 +213,5 @@ module.exports = {
   findLimitUser,
   addAddress,
   deleteMultipleAddress,
-  checkUserDetails,
+  userForgetPassword,
 };
