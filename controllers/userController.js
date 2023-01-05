@@ -2,6 +2,8 @@ const Sequelize = require("sequelize");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
+const jwt = require("jsonwebtoken");
+
 const sequelize = require("../util/database");
 const user = require("../models/user");
 const token = require("../models/accessToken");
@@ -176,6 +178,32 @@ const deleteMultipleAddress = async (req, res) => {
   }
 };
 
+const checkUserDetails = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const data = await user.findOne({
+      where: {
+        email: email,
+      },
+    });
+    if (!data) {
+      return res.status(400).send({ message: "Enter a valid data" });
+    } else {
+      const key = process.env.SECRET_KEY;
+      const jwtToken = jwt.sign({ email: email }, "key");
+
+      const updateData = await user.update(
+        { passwordResetToken: jwtToken },
+        { where: { email: email } }
+      );
+      res.status(200).send(updateData);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error, Internal error" });
+  }
+};
+
 module.exports = {
   userRegister,
   login,
@@ -184,4 +212,5 @@ module.exports = {
   findLimitUser,
   addAddress,
   deleteMultipleAddress,
+  checkUserDetails,
 };

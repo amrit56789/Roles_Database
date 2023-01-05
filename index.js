@@ -16,6 +16,7 @@ const {
   findLimitUser,
   addAddress,
   deleteMultipleAddress,
+  checkUserDetails,
 } = require("./controllers/userController");
 
 // Role table start
@@ -42,9 +43,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 role.sync({ alter: false });
-user.sync({ alter: false });
+user.sync({ alter: true });
 token.sync({ alert: false });
 address.sync({ alter: false });
+
 // Role table
 app.post("/role/add", addRole);
 app.get("/role/list", getAllRole);
@@ -68,6 +70,9 @@ app.get("/user/list/:limit/:page", findLimitUser);
 // address
 app.post("/user/address", tokenValidator, addAddress);
 app.delete("/user/delete", deleteMultipleAddress);
+
+// forget password route
+app.get("/user/forget-password", checkUserDetails);
 
 // Port connection
 const port = process.env.port || 8000;
