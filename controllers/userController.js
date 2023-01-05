@@ -219,6 +219,9 @@ const checkResetPasswordToken = async (req, res) => {
   const jwtCheck = jwt.verify(
     passwordResetToken,
     process.env.SECRET_KEY,
+    {
+      expiresIn: "10m",
+    },
     async (error, data) => {
       if (error) {
         res.status(400).send({ message: "Unauthorized token" });
@@ -233,6 +236,7 @@ const checkResetPasswordToken = async (req, res) => {
         try {
           const updateData = await user.update(
             { password: hash },
+            { passwordResetToken: null },
             { where: { passwordResetToken: passwordResetToken } }
           );
 
