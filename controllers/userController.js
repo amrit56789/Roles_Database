@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const sequelize = require("../util/database");
 const user = require("../models/user");
@@ -196,7 +197,60 @@ const userForgetPassword = async (req, res) => {
         { passwordResetToken: jwtToken },
         { where: { email: req.body.email } }
       );
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.emailID,
+          pass: process.env.emailPassword,
+        },
+      });
 
+      const mailOptions = {
+        from: process.env.emailId,
+        to: process.env.emailTo,
+        subject: "Sending Email using Node.js",
+        text: "That was easy!",
+        html: `<html>
+          <head>
+            <style>
+            body{
+              height : 100%;
+              display : flex;
+              justify-content : center;
+              align-items : center;
+            }
+            .container{
+              width : 100vw;
+              height : 400px;
+              border-radius : 2px;
+              background-color : #fff;
+              box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+            }
+            .btn{
+              border : none;
+              padding : 10px 20px;
+              border-radius : 4px;
+            }
+            </style>
+          </head>
+          <body>
+            <div class = "container">
+
+              <h2>Password Reset</h2>
+              <p>If you've lost your password or wish to reset it, use the link below to get started </p>
+              <button class = "btn"><a href = "http://localhost:8000/user/verify-reset-password/${jwtToken}">Reset Your Password</a></button>
+            </div>
+          </body>
+        </html>`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
       res
         .status(200)
         .send({ message: "User password reset token updated successfully" });
@@ -218,6 +272,9 @@ const checkResetPasswordToken = async (req, res) => {
   const jwtCheck = jwt.verify(
     passwordResetToken,
     process.env.SECRET_KEY,
+    {
+      expiresIn: "10m",
+    },
     async (error, data) => {
       if (error) {
         res.status(400).send({ message: "Unauthorized token" });
@@ -234,6 +291,7 @@ const checkResetPasswordToken = async (req, res) => {
             { password: hash },
             { where: { passwordResetToken: passwordResetToken } }
           );
+
           res.status(200).send({ message: "Success full" });
         } catch (error) {
           console.log(error);

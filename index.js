@@ -7,6 +7,7 @@ const role = require("./models/role");
 const user = require("./models/user");
 const token = require("./models/accessToken");
 const address = require("./models/address");
+const { uploads } = require("./controllers/fileUpload");
 
 const {
   userRegister,
@@ -78,6 +79,12 @@ app.post(
   "/user/verify-reset-password/:passwordResetToken",
   checkResetPasswordToken
 );
+
+// profile-image
+app.post("/user/profile-image/", uploads.single("images"), (req, res) => {
+  res.status(200).send({ message: "Success full add" });
+});
+
 // Port connection
 const port = process.env.port || 8000;
 
