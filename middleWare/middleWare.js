@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+
 const Token = require("../models/accessToken");
 
 const checkValidation = () => {
