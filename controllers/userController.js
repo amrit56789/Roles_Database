@@ -208,7 +208,7 @@ const userForgetPassword = async (req, res) => {
       const mailOptions = {
         from: process.env.emailId,
         to: process.env.emailTo,
-        subject: "Sending Email using Node.js",
+        subject: "Password Reset",
         text: "That was easy!",
         html: `<html>
           <head>
@@ -251,6 +251,7 @@ const userForgetPassword = async (req, res) => {
           console.log("Email sent: " + info.response);
         }
       });
+
       res
         .status(200)
         .send({ message: "User password reset token updated successfully" });
@@ -273,26 +274,27 @@ const checkResetPasswordToken = async (req, res) => {
     passwordResetToken,
     process.env.SECRET_KEY,
     {
-      expiresIn: "10m",
+      expireIn: "10m",
     },
     async (error, data) => {
       if (error) {
         res.status(400).send({ message: "Unauthorized token" });
       } else {
-        const { password } = req.body;
-        if (!password) {
-          res.status(400).send({ message: "Please enter a password" });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
-
         try {
-          const updateData = await user.update(
-            { password: hash },
-            { where: { passwordResetToken: passwordResetToken } }
-          );
+          const { password } = req.body;
+          if (!password) {
+            res.status(400).send({ message: "Please enter a password" });
+          } else {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(password, salt);
 
-          res.status(200).send({ message: "Success full" });
+            const updateData = await user.update(
+              { password: hash },
+              { where: { passwordResetToken: passwordResetToken } }
+            );
+
+            res.status(200).send(updateData);
+          }
         } catch (error) {
           console.log(error);
           res.status(500).send({ message: "Internal server error" });

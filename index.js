@@ -75,7 +75,7 @@ app.delete("/user/delete", deleteMultipleAddress);
 
 // forget password route
 app.get("/user/forget-password", userForgetPassword);
-app.post(
+app.get(
   "/user/verify-reset-password/:passwordResetToken",
   checkResetPasswordToken
 );
